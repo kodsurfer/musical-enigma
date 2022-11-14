@@ -21,4 +21,17 @@ func main() {
 		gtk.MainQuit()
 	})
 
+	userInterface(window)
+}
+
+func userInterface(window *gtk.Window) {
+	btn, _ := gtk.ButtonNew()
+	btn.Connect("click", func() {
+		//
+	})
+
+	btn_label, _ := gtk.LabelNew("Play/Pause")
+	btn.Add(btn_label)
+
+	window.Add(btn)
 }
