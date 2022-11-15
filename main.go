@@ -7,6 +7,8 @@ import (
 
 	"github.com/bogem/id3v2/v2"
 	"github.com/gotk3/gotk3/gtk"
+	"github.com/hajimehoshi/go-mp3"
+	"github.com/hajimehoshi/oto/v2"
 )
 
 func main() {
@@ -50,4 +52,15 @@ func userInterface(window *gtk.Window, tag *id3v2.Tag) {
 
 	grid.AttachNextTo(btn, title, gtk.POS_BOTTOM, 1, 1)
 	window.Add(btn)
+}
+
+func initOto(mp3file string) {
+	file, err := os.Open(mp3file)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+
+	mp3.NewDecoder(file)
+
+	oto.NewContext(44100, 2, 2)
 }
