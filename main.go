@@ -34,7 +34,12 @@ func main() {
 
 }
 
-func userInterface(window *gtk.Window) {
+func userInterface(window *gtk.Window, tag *id3v2.Tag) {
+	grid, _ := gtk.GridNew()
+
+	title, _ := gtk.LabelNew(tag.Title())
+	grid.Attach(title, 0, 0, 1, 1)
+
 	btn, _ := gtk.ButtonNew()
 	btn.Connect("click", func() {
 		//click state
@@ -43,5 +48,6 @@ func userInterface(window *gtk.Window) {
 	btn_label, _ := gtk.LabelNew("Play/Pause")
 	btn.Add(btn_label)
 
+	grid.AttachNextTo(btn, title, gtk.POS_BOTTOM, 1, 1)
 	window.Add(btn)
 }
