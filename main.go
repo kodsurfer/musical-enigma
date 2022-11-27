@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"os"
+	"time"
 
 	"github.com/bogem/id3v2/v2"
 	"github.com/gotk3/gotk3/gtk"
@@ -51,15 +52,27 @@ func userInterface(window *gtk.Window, tag *id3v2.Tag) {
 			if playing {
 				log.Println("Pause")
 				player.Pause()
-				btn.SetLabel("Play")
 			} else {
 				log.Println("Play")
 				player.Play()
-				btn.SetLabel("Pause")
 			}
-			playing = !playing
 		}
 	})
+
+	go func() {
+		playing = player.IsPlaying()
+		for {
+			if playing != player.IsPlaying() {
+				playing = player.IsPlaying()
+				if playing {
+					btn.SetLabel("Play")
+				} else {
+					btn.SetLabel("Pause")
+				}
+			}
+			time.Sleep(16 * time.Millisecond)
+		}
+	}()
 
 	btn_label, _ := gtk.LabelNew("Play/Pause")
 	btn.Add(btn_label)
