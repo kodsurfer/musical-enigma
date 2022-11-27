@@ -12,6 +12,7 @@ import (
 )
 
 var loaded, playing bool
+var player oto.Player
 
 func main() {
 	gtk.Init(nil)
@@ -47,7 +48,16 @@ func userInterface(window *gtk.Window, tag *id3v2.Tag) {
 	btn, _ := gtk.ButtonNew()
 	btn.Connect("click", func() {
 		if loaded {
-
+			if playing {
+				log.Println("Pause")
+				player.Pause()
+				btn.SetLabel("Play")
+			} else {
+				log.Println("Play")
+				player.Play()
+				btn.SetLabel("Pause")
+			}
+			playing = !playing
 		}
 	})
 
