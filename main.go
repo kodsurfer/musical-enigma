@@ -11,6 +11,8 @@ import (
 	"github.com/hajimehoshi/oto/v2"
 )
 
+var loaded, playing bool
+
 func main() {
 	gtk.Init(nil)
 	log.Print("Start musical-enigma")
@@ -26,13 +28,13 @@ func main() {
 		gtk.MainQuit()
 	})
 
-	userInterface(window)
-
 	mp3 := os.Args[1]
-	_, err = id3v2.Open(mp3, id3v2.Options{Parse: true})
+	id3tag, err := id3v2.Open(mp3, id3v2.Options{Parse: true})
 	if err != nil {
 		log.Fatal("id3 tag parse error")
 	}
+
+	userInterface(window, id3tag)
 
 }
 
@@ -44,7 +46,9 @@ func userInterface(window *gtk.Window, tag *id3v2.Tag) {
 
 	btn, _ := gtk.ButtonNew()
 	btn.Connect("click", func() {
-		//click state
+		if loaded {
+
+		}
 	})
 
 	btn_label, _ := gtk.LabelNew("Play/Pause")
