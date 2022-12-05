@@ -4,12 +4,16 @@ import (
 	"log"
 
 	"os"
+	"time"
 
 	"github.com/bogem/id3v2/v2"
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/hajimehoshi/go-mp3"
 	"github.com/hajimehoshi/oto/v2"
 )
+
+var loaded, playing bool
+var player oto.Player
 
 func main() {
 	gtk.Init(nil)
@@ -26,13 +30,13 @@ func main() {
 		gtk.MainQuit()
 	})
 
-	userInterface(window)
-
 	mp3 := os.Args[1]
-	_, err = id3v2.Open(mp3, id3v2.Options{Parse: true})
+	id3tag, err := id3v2.Open(mp3, id3v2.Options{Parse: true})
 	if err != nil {
 		log.Fatal("id3 tag parse error")
 	}
+
+	userInterface(window, id3tag)
 
 }
 
@@ -44,8 +48,31 @@ func userInterface(window *gtk.Window, tag *id3v2.Tag) {
 
 	btn, _ := gtk.ButtonNew()
 	btn.Connect("click", func() {
-		//click state
+		if loaded {
+			if playing {
+				log.Println("Pause")
+				player.Pause()
+			} else {
+				log.Println("Play")
+				player.Play()
+			}
+		}
 	})
+
+	go func() {
+		playing = player.IsPlaying()
+		for {
+			if playing != player.IsPlaying() {
+				playing = player.IsPlaying()
+				if playing {
+					btn.SetLabel("Play")
+				} else {
+					btn.SetLabel("Pause")
+				}
+			}
+			time.Sleep(16 * time.Millisecond)
+		}
+	}()
 
 	btn_label, _ := gtk.LabelNew("Play/Pause")
 	btn.Add(btn_label)
