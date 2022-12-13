@@ -33,6 +33,8 @@ func main() {
 	if err != nil {
 		log.Fatal("id3 tag parse error")
 	}
+	
+	//TODO: continue
 
 }
 
